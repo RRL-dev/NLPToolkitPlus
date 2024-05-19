@@ -1,0 +1,7 @@
+dataset:
+  type:
+    csv:
+      diabetes: 'resources/data/csv/diabetes.csv'
+      cancer: 'resources/data/csv/cancer.csv'
+  database:
+    path: 'resources/database/data.db'
