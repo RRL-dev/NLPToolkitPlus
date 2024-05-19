@@ -1,7 +1,11 @@
 
+<div align="center">
+
 # LightChain
 
-Welcome to **LightChain**, a lightweight version of LangChain designed to provide efficient and straightforward capabilities for natural language processing. LightChain is tailored for use with machine learning agents and integrates seamlessly with various data sources to enable powerful querying and database management.
+**Welcome to LightChain**, a lightweight version of LangChain designed to provide efficient and straightforward capabilities for natural language processing. LightChain is tailored for use with machine learning agents and integrates seamlessly with various data sources to enable powerful querying and database management.
+
+</div>
 
 ## Features
 
@@ -17,7 +21,7 @@ Welcome to **LightChain**, a lightweight version of LangChain designed to provid
 
 Ensure you have the following installed:
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - Required Python packages (install via `pyproject.toml`)
 
 ### Installation
@@ -25,7 +29,7 @@ Ensure you have the following installed:
 Clone the repository and navigate to the project directory:
 
 ```bash
-git clone https://github.com/your-username/lightchain.git
+git clone https://github.com/RRL-dev/lightchain.git
 cd lightchain
 ```
 
@@ -103,13 +107,13 @@ The cancer and diabetes data are located in `resources/data`. To integrate these
 
 Contributions to LightChain are welcome! Please fork the repository and submit pull requests for any enhancements or bug fixes.
 
-## License
+### License
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache License 2.0.
 
 ## Contact
 
-For any questions or issues, please open an issue on GitHub or contact the repository maintainer at your-email@example.com.
+For any questions or issues, please open an issue on GitHub or contact the repository maintainer at reznik.roni@gmail.com.
 
 ---
 
