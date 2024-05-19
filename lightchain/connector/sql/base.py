@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 from sqlalchemy import MetaData, Table, create_engine, inspect, text
 
-from superchain.utils import LOGGER
+from lightchain.utils import LOGGER
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -134,7 +134,7 @@ class SQLDatabase:
     ) -> str | Sequence[dict[str, Any]] | Result[Any]:
         """Execute a SQL command or query and fetch results based on the specified mode.
 
-        Args
+        Args:
         ----
             command (Union[str, Executable]): The SQL command or query to execute.
             fetch (Literal["all", "one", "cursor"], optional): The fetching strategy for query results.

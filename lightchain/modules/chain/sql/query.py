@@ -13,8 +13,8 @@ from sqlalchemy.exc import (
     SQLAlchemyError,
 )
 
-from superchain.connector import SQLDatabase, get_table_info_from_sql_database
-from superchain.utils import LOGGER
+from lightchain.connector import SQLDatabase, get_table_info_from_sql_database
+from lightchain.utils import LOGGER
 
 from .prompt import sqlite_query_prompt
 

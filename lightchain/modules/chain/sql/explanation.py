@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from openai import OpenAI
 
-from superchain.utils import LOGGER
+from lightchain.utils import LOGGER
 
 from .prompt import sql_translation_prompt
 

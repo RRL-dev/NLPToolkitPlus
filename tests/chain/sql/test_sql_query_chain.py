@@ -7,8 +7,8 @@ from __future__ import annotations
 import unittest
 from typing import TYPE_CHECKING, Any
 
-from superchain.connector import SQLDatabase
-from superchain.modules.chain import SQLQueryChain
+from lightchain.connector import SQLDatabase
+from lightchain.modules.chain import SQLQueryChain
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

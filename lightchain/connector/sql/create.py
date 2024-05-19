@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Engine, create_engine, inspect
 from sqlalchemy.exc import SQLAlchemyError
 
-from superchain.utils import LOGGER
-from superchain.utils.io import FilesReader
+from lightchain.utils import LOGGER
+from lightchain.utils.io import FilesReader
 
 if TYPE_CHECKING:
     from types import SimpleNamespace

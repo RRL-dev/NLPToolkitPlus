@@ -9,12 +9,12 @@ from sqlalchemy.exc import (
     SQLAlchemyError,
 )
 
-from superchain.connector import SQLDatabase
-from superchain.modules.chain import (
+from lightchain.connector import SQLDatabase
+from lightchain.modules.chain import (
     SQLExplanationChain,
     SQLQueryChain,
 )
-from superchain.utils import LOGGER
+from lightchain.utils import LOGGER
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
