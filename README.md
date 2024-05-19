@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="lightchain/assets/logo.png" alt="uim" width="400" height="auto">
+</div>
+
 
 <div align="center">
 
