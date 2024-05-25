@@ -5,12 +5,10 @@ from typing import TypeVar
 
 from yaml import safe_load
 
-from superchain.utils.path import suffix
-
 T = TypeVar("T")
 
 
-def load_pickle(filepath: str) -> T: # type: ignore  # noqa: PGH003
+def load_pickle(filepath: str) -> T:  # type: ignore  # noqa: PGH003
     """Load a pickle file and return its contents.
 
     Args:
@@ -65,8 +63,6 @@ def load_yaml(file_path: str) -> dict[str, str | int | float | bool | None | lis
         AssertionError: If the file is not a YAML file.
 
     """  # noqa: E501
-    assert suffix(name=file_path) == ".yaml", f"file {file_path} is not a YAML file"  # noqa: S101
-
     with open(file=file_path, encoding="utf-8") as obj:  # noqa: PTH123
         file_content: str = obj.read()
 
