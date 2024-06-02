@@ -18,6 +18,7 @@
 - **Text-to-MongoDB**: Integrate natural language queries with MongoDB (To-do).
 - **Database Management**: Easily create and manage databases using the `FilesToSQL` utility.
 - **Support for Multiple Data Sources**: Integrate with different datasets including Chinook, cancer, and diabetes data.
+- **GPT-2 Model Integration**: Utilize the GPT-2 model for advanced text generation and processing tasks, implemented under `lightchain/models/decoder/gpt2`.
 
 ## Getting Started
 
