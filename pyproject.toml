@@ -21,10 +21,12 @@ classifiers = [
 
 dependencies = [
     "elasticsearch8==8.13.1",
+    "matplotlib==3.9.0",
     "openai==1.27.0",
     "pandas==1.5.3",
     "python-dotenv==1.0.1",
     "SQLAlchemy==2.0.30",
+    "seaborn==0.13.2",
     "transformers==4.41.0",
     "torch==2.3.0"
 ]
