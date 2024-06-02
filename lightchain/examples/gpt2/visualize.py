@@ -59,7 +59,7 @@ model = GPT2LMHeadModel(config=config)
 
 # Load pretrained weights
 state_dict: OrderedDict = torch.load(
-    f="/home/roni/Downloads/gpt2-pytorch_model.bin",
+    f=".../gpt2-pytorch_model.bin",
     map_location="cpu",
 )
 
