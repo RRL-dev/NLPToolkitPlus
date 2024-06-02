@@ -6,13 +6,14 @@ import os
 from typing import TYPE_CHECKING, Any
 
 from dotenv import load_dotenv
+from torch.nn import Module
 from transformers import AutoConfig, PretrainedConfig
 from transformers.models.auto.modeling_auto import MODEL_FOR_CAUSAL_LM_MAPPING
 from transformers.tokenization_utils_base import BatchEncoding
 
 if TYPE_CHECKING:
     from torch import Tensor
-    from transformers.models.auto.auto_factory import _BaseAutoModelClass
+    from transformers import PreTrainedModel
     from transformers.tokenization_utils import PreTrainedTokenizer
     from transformers.tokenization_utils_fast import PreTrainedTokenizerFast
 
@@ -23,52 +24,60 @@ load_dotenv()
 hf_token: str | None = os.getenv(key="HF_TOKEN")
 
 
-class BaseModelForCausalLM:
+class BaseModelForCausalLM(Module):
     """A simple class to load a causal language model."""
 
-    def __init__(
+    def __init__(  # noqa: D107
         self: BaseModelForCausalLM,
-        pretrained_model_name_or_path: str,
+        model_name_or_path: str,
+        from_pretrained: bool = True,  # noqa: FBT001, FBT002
         **kwargs: dict[str, Any],
     ) -> None:
-        """Initialize the SimpleAutoModelForCausalLM class.
+        super().__init__()
+        """Initialize the BaseModelForCausalLM class.
 
         Args:
         ----
-            pretrained_model_name_or_path (str): The path or name of the pretrained model.
+            model_name_or_path (str): The path or name of the model.
+            from_pretrained (bool): Whether to load a pretrained model or initialize from scratch.
             **kwargs (Dict[str, Any]): Additional keyword arguments for the model configuration.
-
         """
-        config: dict[str, Any] | None = kwargs.pop("config", None)
-        trust_remote_code: dict[str, Any] | None = kwargs.pop("trust_remote_code", None)
+        if "trust_remote_code" in kwargs:
+            trust_remote_code: bool = kwargs["trust_remote_code"]  # type: ignore  # noqa: PGH003
+        else:
+            trust_remote_code = False
 
-        if not isinstance(config, PretrainedConfig):
-            config = AutoConfig.from_pretrained(
-                pretrained_model_name_or_path=pretrained_model_name_or_path,
-                trust_remote_code=trust_remote_code,
-                **kwargs,
-            )
+        config = AutoConfig.from_pretrained(
+            pretrained_model_name_or_path=model_name_or_path,
+            trust_remote_code=trust_remote_code,
+            **kwargs,
+        )
+
+        self.config: PretrainedConfig = config
 
         if kwargs.get("torch_dtype", None) == "auto":
             kwargs["torch_dtype"] = "auto"  # type: ignore  # noqa: PGH003
         if kwargs.get("quantization_config", None) is not None:
             kwargs["quantization_config"] = kwargs["quantization_config"]
 
-        model_class: type[None | _BaseAutoModelClass | Any] = self._get_model_class(
-            config=config,  # type: ignore  # noqa: PGH003
-        )
+        model_class: type[Any] = self._get_model_class(config=config)
 
-        self.model = model_class.from_pretrained( # type: ignore  # noqa: PGH003
-            pretrained_model_name_or_path,
-            config=config,
-            **kwargs,  # type: ignore  # noqa: PGH003
-        )
+        if from_pretrained:
+            model: PreTrainedModel = model_class.from_pretrained(
+                pretrained_model_name_or_path=model_name_or_path,
+                config=config,
+                **kwargs,
+            )
+        else:
+            model = model_class(config)  # type: ignore  # noqa: PGH003
+
+        self.add_module(name=self.config.model_type, module=model)
 
     @classmethod
     def from_pretrained(
         cls: type[BaseModelForCausalLM],
         pretrained_model_name_or_path: str,
-        *model_args: tuple[Any, ...],
+        from_pretrained: bool = True,  # noqa: FBT001, FBT002
         **kwargs: dict[str, Any],
     ) -> BaseModelForCausalLM:
         """Load the pretrained model.
@@ -76,6 +85,7 @@ class BaseModelForCausalLM:
         Args:
         ----
             pretrained_model_name_or_path (str): The path or name of the pretrained model.
+            from_pretrained (bool): Whether to load a pretrained model or initialize from scratch.
             *model_args: Additional arguments for the model.
             **kwargs (Dict[str, Any]): Additional keyword arguments for the model.
 
@@ -87,7 +97,7 @@ class BaseModelForCausalLM:
         token: dict[str, Any] | str | None = kwargs.pop("use_auth_token", hf_token)
         if isinstance(token, str):
             kwargs["use_auth_token"] = token  # type: ignore  # noqa: PGH003
-        return cls(pretrained_model_name_or_path, *model_args, **kwargs)
+        return cls(pretrained_model_name_or_path, from_pretrained, **kwargs)
 
     def _get_model_class(self: BaseModelForCausalLM, config: PretrainedConfig) -> type[Any]:
         supported_models = MODEL_FOR_CAUSAL_LM_MAPPING[type(config)]
@@ -108,7 +118,8 @@ class BaseModelForCausalLM:
         return supported_models[0]
 
     def __call__(
-        self: BaseModelForCausalLM, input_ids: BatchEncoding | dict[str, Tensor]
+        self: BaseModelForCausalLM,
+        input_ids: BatchEncoding | dict[str, Tensor],
     ) -> Tensor:
         """Call the model.
 
@@ -119,7 +130,9 @@ class BaseModelForCausalLM:
         """
         if isinstance(input_ids, BatchEncoding):
             input_ids = input_ids.data  # Convert BatchEncoding to dict[str, Tensor]
-        return self.model.generate(**input_ids)
+        return self.get_submodule(target=self.config.model_type).generate(
+            input_ids,
+        )
 
 
 if __name__ == "__main__":
