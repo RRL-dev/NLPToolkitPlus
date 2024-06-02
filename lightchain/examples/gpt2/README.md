@@ -5,6 +5,20 @@
 
 This tutorial provides a detailed walkthrough of the GPT-2 model architecture, starting from token input to the final output. We'll explore the embedding layers, position encoding, layer normalization, and attention mechanisms, including multi-head attention and residual connections.
 
+## Visualizing Attention
+
+Here are visualizations of attention patterns for the first few heads of Layer 1 during inference:
+
+### Layer 1, Head 1
+![Layer 1, Head 1](./gpt_attn_head_1.png)
+
+### Layer 1, Head 2
+![Layer 1, Head 2](./gpt_attn_head_2.png)
+
+### Layer 1, Head 3
+![Layer 1, Head 3](./gpt_attn_head_3.png)
+
+
 ## Token Input
 
 The input tokens are first passed into an embedding layer:
