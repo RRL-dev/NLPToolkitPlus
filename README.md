@@ -1,7 +1,7 @@
+
 <div align="center">
   <img src="lightchain/assets/logo.png" alt="uim" width="400" height="auto">
 </div>
-
 
 <div align="center">
 
@@ -101,6 +101,21 @@ files_to_sql.cache_to_sql()
 ### Example Usage with Cancer and Diabetes Data
 
 The cancer and diabetes data are located in `resources/data`. To integrate these into a database (`data.db`), follow the instructions above to use `FilesToSQL`.
+
+### Tutorial: Using LightChain for SQL Database Interactions
+
+A comprehensive tutorial is available in the `lightchain/examples/text_to_sql/tutorial.py` file. This tutorial demonstrates how to interact with a SQL database using the LightChain library.
+
+#### Prerequisites
+
+- Ensure you have installed the `lightchain` library.
+- Create a `.env` file in your project's root directory and add your OpenAI API key:
+
+```plaintext
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+You can view and download the raw content of the tutorial [here](https://raw.githubusercontent.com/RRL-dev/lightchain/main/lightchain/examples/text_to_sql/tutorial.py).
 
 ## To-do List
 
