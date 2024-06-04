@@ -46,7 +46,7 @@ class SQLQueryChain:
     ) -> None:
         """Initialize the SQLQueryChain class with a database connection and top_k value for query limits.
 
-        Args
+        Args:
         ----
             db (SQLDatabase): A connection to a SQL database.
             top_k (int): The maximum number of results to retrieve from queries without a specified limit.
@@ -138,7 +138,9 @@ class SQLQueryChain:
 
         try:
             result: str | Sequence[dict[str, Any]] | Result[Any] = self.db.run(
-                command=sql_query, fetch=fetch, include_columns=True
+                command=sql_query,
+                fetch=fetch,
+                include_columns=True,
             )
             return result
 

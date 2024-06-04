@@ -38,7 +38,7 @@ def get_table_info_from_sql_database(  # noqa: C901, PLR0913
     inspector: Any = inspect(engine)
     all_tables: set[str] = set(
         inspector.get_table_names(schema=schema)
-        + (inspector.get_view_names(schema=schema) if view_support else [])
+        + (inspector.get_view_names(schema=schema) if view_support else []),
     )
 
     usable_table_names: set[str] = set(table_names) if table_names else all_tables
@@ -56,7 +56,7 @@ def get_table_info_from_sql_database(  # noqa: C901, PLR0913
     def _get_table_indexes(table: Table) -> str:
         indexes: Any = inspector.get_indexes(table.name)
         indexes_formatted: str = "\n".join(
-            [f"INDEX {idx['name']}: {idx['column_names']}" for idx in indexes]
+            [f"INDEX {idx['name']}: {idx['column_names']}" for idx in indexes],
         )
         return f"Table Indexes:\n{indexes_formatted}"
 

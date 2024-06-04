@@ -8,7 +8,7 @@ from pandas import DataFrame
 from pandas.io.excel import read_excel
 from pandas.io.parsers import read_csv
 
-from superchain.utils import LOGGER
+from lightchain.utils import LOGGER
 
 if TYPE_CHECKING:
     from collections.abc import Callable

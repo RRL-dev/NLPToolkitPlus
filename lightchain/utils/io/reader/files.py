@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from pandas.core.frame import DataFrame
 
-from superchain.utils import LOGGER
+from lightchain.utils import LOGGER
 
 from .format import read_csv_format, read_xlsx_format
 

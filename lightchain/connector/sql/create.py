@@ -51,7 +51,10 @@ class FilesToSQL(FilesReader):
             return None
 
     def save_to_sql(
-        self: FilesToSQL, table_name: str, df: DataFrame, if_exists: str = "replace",
+        self: FilesToSQL,
+        table_name: str,
+        df: DataFrame,
+        if_exists: str = "replace",
     ) -> None:
         """Save a DataFrame to an SQL table.
 
@@ -110,3 +113,9 @@ class FilesToSQL(FilesReader):
         LOGGER.info(msg=f"Table {table_name} columns:")
         for column in columns:
             LOGGER.info(msg=f"  {column['name']} ({column['type']})")
+
+
+if __name__ == "__main__":
+    from lightchain.utils import DATASET_CFG
+
+    FilesToSQL(config=DATASET_CFG).cache_to_sql()
