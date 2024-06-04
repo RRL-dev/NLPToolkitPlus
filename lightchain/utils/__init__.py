@@ -7,10 +7,12 @@ from sys import stdout
 from types import SimpleNamespace
 from typing import Any, ClassVar
 
+from .cuda import set_device
 from .path import search_files, suffix
+from .seed import set_global_seed
 from .serialization import load_yaml
 
-__all__: list[str] = ["search_files", "suffix"]
+__all__: list[str] = ["search_files", "suffix", "set_device", "set_global_seed"]
 
 FILE: Path = Path(__file__).resolve()
 ROOT: Path = FILE.parents[1]
@@ -19,9 +21,9 @@ DATASET_CFG_PATH: Path = ROOT / "cfg/dataset/base.yaml"
 DATASET_CFG_DICT: Any | dict[Any, Any] = load_yaml(file_path=DATASET_CFG_PATH.as_posix())
 DATASET_CFG = SimpleNamespace(**DATASET_CFG_DICT)
 
-CONNECTOR_CFG_PATH: Path = ROOT / "cfg/connector/base.yaml"
-CONNECTOR_CFG_DICT: Any | dict[Any, Any] = load_yaml(file_path=CONNECTOR_CFG_PATH.as_posix())
-CONNECTOR_CFG = SimpleNamespace(**CONNECTOR_CFG_DICT)
+# CONNECTOR_CFG_PATH: Path = ROOT / "cfg/connector/base.yaml"
+# CONNECTOR_CFG_DICT: Any | dict[Any, Any] = load_yaml(file_path=CONNECTOR_CFG_PATH.as_posix())
+# CONNECTOR_CFG = SimpleNamespace(**CONNECTOR_CFG_DICT)
 
 
 class CustomFormatter(logging.Formatter):
