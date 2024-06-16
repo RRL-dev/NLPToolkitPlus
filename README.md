@@ -1,13 +1,13 @@
 
 <div align="center">
-  <img src="lightchain/assets/logo.png" alt="uim" width="400" height="auto">
+  <img src="nltkp/assets/logo.png" alt="uim" width="400" height="auto">
 </div>
 
 <div align="center">
 
-# LightChain
+# NLPToolkitPlus
 
-**Welcome to LightChain**, a lightweight version of LangChain designed to provide efficient and straightforward capabilities for natural language processing. LightChain is tailored for use with machine learning agents and integrates seamlessly with various data sources to enable powerful querying and database management.
+**Welcome to NLPToolkitPlus**, a lightweight nlp modules designed to provide efficient and straightforward capabilities for natural language processing. NLPToolkitPlus is tailored for use with machine learning agents and integrates seamlessly with various data sources to enable powerful querying and database management.
 
 </div>
 
@@ -18,7 +18,7 @@
 - **Text-to-MongoDB**: Integrate natural language queries with MongoDB (To-do).
 - **Database Management**: Easily create and manage databases using the `FilesToSQL` utility.
 - **Support for Multiple Data Sources**: Integrate with different datasets including Chinook, cancer, and diabetes data.
-- **GPT-2 Model Integration**: Utilize the GPT-2 model for advanced text generation and processing tasks, implemented under `lightchain/models/decoder/gpt2`.
+- **GPT-2 Model Integration**: Utilize the GPT-2 model for advanced text generation and processing tasks, implemented under `nltkp/models/decoder/gpt2`.
 
 ## Getting Started
 
@@ -34,8 +34,8 @@ Ensure you have the following installed:
 Clone the repository and navigate to the project directory:
 
 ```bash
-git clone https://github.com/RRL-dev/lightchain.git
-cd lightchain
+git https://github.com/RRL-dev/NLPToolkitPlus.git
+cd NLPToolkitPlus
 ```
 
 Install the required packages:
@@ -46,7 +46,7 @@ pip install -e .
 
 ### Directory Structure
 
-- `lightchain/modules/agent/sql/base.py`: Contains the `SqlAgent` class for text-to-SQL conversion.
+- `nltkp/modules/agent/sql/base.py`: Contains the `SqlAgent` class for text-to-SQL conversion.
 - `resources/database/Chinook.db`: Sample database used for SQL queries.
 - `resources/data`: Directory containing cancer and diabetes data files.
 - `superchain/connector/sql/create.py`: Contains the `FilesToSQL` class for creating databases from data files.
@@ -56,10 +56,10 @@ pip install -e .
 
 ### Text-to-SQL Conversion
 
-The `SqlAgent` class in `lightchain/modules/agent/sql/base.py` allows you to convert natural language queries into SQL. Here’s how to use it:
+The `SqlAgent` class in `nltkp/modules/agent/sql/base.py` allows you to convert natural language queries into SQL. Here’s how to use it:
 
 ```python
-from lightchain.modules.agent.sql.base import SqlAgent
+from nltkp.modules.agent.sql.base import SqlAgent
 from superchain.connector import SQLDatabase
 
 # Initialize the database
@@ -102,30 +102,30 @@ files_to_sql.cache_to_sql()
 
 The cancer and diabetes data are located in `resources/data`. To integrate these into a database (`data.db`), follow the instructions above to use `FilesToSQL`.
 
-### Tutorial: Using LightChain for SQL Database Interactions
+### Tutorial: Using NLPToolkitPlus for SQL Database Interactions
 
-A comprehensive tutorial is available in the `lightchain/examples/text_to_sql/tutorial.py` file. This tutorial demonstrates how to interact with a SQL database using the LightChain library.
+A comprehensive tutorial is available in the `nltkp/examples/text_to_sql/tutorial.py` file. This tutorial demonstrates how to interact with a SQL database using the NLPToolkitPlus library.
 
 #### Prerequisites
 
-- Ensure you have installed the `lightchain` library.
+- Ensure you have installed the `nltkp` library.
 - Create a `.env` file in your project's root directory and add your OpenAI API key:
 
 ```plaintext
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-You can view and download the raw content of the tutorial [here](https://raw.githubusercontent.com/RRL-dev/lightchain/main/lightchain/examples/text_to_sql/tutorial.py).
+You can view and download the raw content of the tutorial [here](https://raw.githubusercontent.com/RRL-dev/NLPToolkitPlus/main/nltkp/examples/text_to_sql/tutorial.py).
 
 ## To-do List
 
 - [ ] Implement Text-to-Elasticsearch functionality.
 - [ ] Implement Text-to-MongoDB functionality.
-- [ ] Develop tools-lightchain for additional utility functions.
+- [ ] Develop tools-nltkp for additional utility functions.
 
 ## Contributions
 
-Contributions to LightChain are welcome! Please fork the repository and submit pull requests for any enhancements or bug fixes.
+Contributions to NLPToolkitPlus are welcome! Please fork the repository and submit pull requests for any enhancements or bug fixes.
 
 ### License
 
@@ -137,4 +137,4 @@ For any questions or issues, please open an issue on GitHub or contact the repos
 
 ---
 
-Thank you for using LightChain! We hope it simplifies your natural language processing tasks and enhances your data management capabilities.
+Thank you for using NLPToolkitPlus! We hope it simplifies your natural language processing tasks and enhances your data management capabilities.
