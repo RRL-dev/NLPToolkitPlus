@@ -55,7 +55,7 @@ class SentenceMPNet(nn.Module):
 
         embeddings: list[Tensor] = self.pooling.apply_pooling(output_vectors=[], features=features)
 
-        return torch.cat(embeddings, dim=1)
+        return torch.cat(tensors=embeddings, dim=1)
 
     def encode(
         self: SentenceMPNet,
