@@ -38,8 +38,8 @@ class BasePooling:
 
     Methods:
     -------
-    __init__(self, word_embedding_dimension: int, **pooling_modes: bool):
-        Initializes the Pooling instance with specified embedding dimension and pooling modes.
+    __init__(self, **pooling_modes: bool):
+        Initializes the Pooling instance with pooling modes.
 
     apply_pooling(self, output_vectors: List[torch.Tensor], features: Dict[str, Any],
         token_embeddings: torch.Tensor) -> None:
@@ -47,13 +47,11 @@ class BasePooling:
 
     Args:
     ----
-        word_embedding_dimension (int): The dimension of the embeddings used for pooling.
         **pooling_modes (bool): Arbitrary keyword arguments where keys are the mode.
 
     Example usage:
     --------------
         pooling_instance = Pooling(
-            word_embedding_dimension=768,
             pooling_mode_cls_token=True,
             pooling_mode_mean_tokens=True
             )
