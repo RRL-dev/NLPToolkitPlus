@@ -1,8 +1,7 @@
-embeddings:
-  path: 'resources/embeddings/documents'
-  pooling_type:
-    cls: true
-    max: false
-    mean: true
-    mean_sqrt: false
-    weighted_mean: false
+path: 'resources/embeddings/documents'
+pooling_type:
+  cls: true
+  max: false
+  mean: true
+  mean_sqrt: false
+  weighted_mean: false
