@@ -34,7 +34,6 @@ class BasePooling:
 
     Attributes:
     ----------
-    word_embedding_dimension (int): Dimensionality of the word embeddings.
     pooling_functions (Sequence[Callable]): A list of pooling function callables.
 
     Methods:
@@ -65,18 +64,17 @@ class BasePooling:
 
     """
 
-    def __init__(self: BasePooling, word_embedding_dimension: int, **pooling_modes: bool) -> None:
+    def __init__(self: BasePooling, **pooling_modes: bool) -> None:
         """Initialize the BasePooling instance with specified embedding dimension and pooling modes.
 
         Args:
         ----
-            word_embedding_dimension (int): The dimension of the embeddings used for pooling.
             **pooling_modes (bool): Arbitrary keyword arguments where keys are the mode names
                 and values are booleans indicating whether to activate the corresponding mode.
 
         """
-        self.word_embedding_dimension: int = word_embedding_dimension
         self.pooling_functions: list[Callable[[list[Tensor], dict[str, Any]], None]] = []
+        self.pooling_modes: dict[str, bool] = pooling_modes
 
         # Append the correct functions based on configuration
         for mode, func in pooling_funcs.items():
@@ -103,3 +101,8 @@ class BasePooling:
         for func in self.pooling_functions:
             func(output_vectors, features)
         return output_vectors
+
+    def __repr__(self: BasePooling) -> str:
+        """Represent the BasePooling instance showing active pooling modes and their status."""
+        modes_status = ", ".join(f"{mode}={status}" for mode, status in self.pooling_modes.items())
+        return f"{self.__class__.__name__}({modes_status})"
