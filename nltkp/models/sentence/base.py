@@ -45,9 +45,14 @@ class BaseSentenceModel(nn.Module):
 
     """
 
-    def __init__(self: BaseSentenceModel, model_name: str, pooling_modes: dict) -> None:
-        """Initialize the SentenceMPNet model with specified model path or name."""
+    def __init__(self: BaseSentenceModel, model_name: str, pooling_modes: dict | None) -> None:
+        """Initialize the BaseSentenceModel model with specified model path or name."""
         super().__init__()
+
+        if pooling_modes is None:
+            pooling_modes = {"cls": True}
+
+        LOGGER.info("The pooling modes @ BaseSentenceModel are: \n %s", pooling_modes)
 
         self.pooling = BasePooling(**pooling_modes)
         self._tokenizer: PreTrainedTokenizer | PreTrainedTokenizerFast | None = None
@@ -70,7 +75,7 @@ class BaseSentenceModel(nn.Module):
         """
         if self._tokenizer is None:
             self._tokenizer = AutoTokenizer.from_pretrained(
-                pretrained_model_name_or_path=f"sentence-transformers/{self.model_name}",
+                pretrained_model_name_or_path=self.model_name,
             )
         return self._tokenizer
 
@@ -86,7 +91,7 @@ class BaseSentenceModel(nn.Module):
             self.register_module(
                 name=self.model_name,
                 module=AutoModel.from_pretrained(
-                    pretrained_model_name_or_path=f"sentence-transformers/{self.model_name}",
+                    pretrained_model_name_or_path=self.model_name,
                 ),
             )
             LOGGER.info("Model %s registry successfully.", self.model_name)
