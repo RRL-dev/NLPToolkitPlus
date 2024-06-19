@@ -60,7 +60,7 @@ The `SqlAgent` class in `nltkp/modules/agent/sql/base.py` allows you to convert 
 
 ```python
 from nltkp.modules.agent.sql.base import SqlAgent
-from superchain.connector import SQLDatabase
+from nltkp.connector import SQLDatabase
 
 # Initialize the database
 db = SQLDatabase.from_uri("sqlite:///resources/database/Chinook.db")
@@ -82,12 +82,12 @@ Use the `FilesToSQL` class from `superchain/connector/sql/create.py` to create d
 2. Use the provided YAML configuration file `superchain/cfg/dataset/base.yaml` for setting up the database.
 
 ```python
-from superchain.connector.sql.create import FilesToSQL
+from nltkp.connector.sql.create import FilesToSQL
 from types import SimpleNamespace
 import yaml
 
 # Load the YAML configuration
-with open('superchain/cfg/dataset/base.yaml', 'r') as file:
+with open('nltkp/cfg/dataset/base.yaml', 'r') as file:
     config = yaml.safe_load(file)
 config = SimpleNamespace(**config)
 
