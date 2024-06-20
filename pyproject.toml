@@ -3,9 +3,9 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lightchain"
+name = "nltkp"
 version = "0.1.0"
-description = "lightchain"
+description = "nltkp"
 authors = [{ name = "Roni Reznik", email = "roni.reznik@gmail.com" }]
 readme = "README.md"
 license = { text = "MIT" }
@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "elasticsearch8==8.13.1",
+    "accelerate==0.31.0",
     "matplotlib==3.9.0",
     "openai==1.27.0",
     "pandas==1.5.3",
@@ -28,10 +28,13 @@ dependencies = [
     "SQLAlchemy==2.0.30",
     "seaborn==0.13.2",
     "transformers==4.41.0",
-    "torch==2.3.0"
+    "torch==2.3.0",
+    "tqdm==4.66.4"
 ]
 
 [project.optional-dependencies]
+faiss-cpu = ["faiss-cpu>=1.7.1"]
+faiss-gpu = ["faiss-gpu>=1.7.1"]
 dev = [
     "pytest",
     "mypy",
@@ -44,8 +47,8 @@ include-package-data = true  # tried both true and false
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["superchain*"]
-exclude = ["resources*"]
+include = ["nltkp*"]
+exclude = ["resources*", "scripts*"]
 
 [tool.mypy]
 ignore_missing_imports = true
