@@ -34,7 +34,7 @@ class FaissSimilaritySearch(BaseSentenceModel, BaseFaissAnn):
         self: FaissSimilaritySearch,
         directory: str,
         model_name: str,
-        index_type: str = "L2",
+        index_type: str = "IP",
         pooling_modes: dict | None = None,
     ) -> None:
         """Initialize the FaissSimilaritySearch for embedding searching.
@@ -99,13 +99,17 @@ class FaissSimilaritySearch(BaseSentenceModel, BaseFaissAnn):
 
     def query_with_names(
         self: FaissSimilaritySearch,
-        sentence: str,
+        sentences: str | list[str],
         n_neighbors: int,
     ) -> list[tuple[str, float]]:
         """Perform a similarity search and return names and distances of the nearest neighbors."""
-        LOGGER.info("Encode sentence: %s\n Using model: %s", sentence, self.model_name)
+        LOGGER.info("Encode sentence: %s\n Using model: %s", sentences, self.model_name)
+
+        if isinstance(sentences, str):
+            sentences = [sentences]
+
         embedding: Tensor | ndarray[Any, dtype[Any]] = self.encode(
-            sentences=[sentence],
+            sentences=sentences,
             convert_to_numpy=True,
         ).squeeze()
         LOGGER.info("Query embedding sentence of shape dim: %s", embedding.shape)
