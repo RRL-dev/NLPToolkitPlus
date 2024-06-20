@@ -63,7 +63,7 @@ class BaseFaissAnn(BaseAnn):
             embeddings (NDArray[float32]): The data to fit into the ANN structure.
 
         """
-        LOGGER.info("Start fit BaseFaissAnn")
+        LOGGER.info(msg="Start fit BaseFaissAnn")
         if not isinstance(embeddings, ndarray):
             msg: str = f"Embeddings must be an ndarray, got {type(embeddings).__name__}"
             raise TypeError(msg)
@@ -75,7 +75,7 @@ class BaseFaissAnn(BaseAnn):
         elif self.index_type == "IP":
             self.index = IndexFlatIP(d)
         else:
-            msg = "Invalid index type specified."
+            msg = "Invalid index type specified, use indexes as 'IP' or 'L2."
             raise ValueError(msg)
 
         self.index.add(embeddings)  # type: ignore  # noqa: PGH003
