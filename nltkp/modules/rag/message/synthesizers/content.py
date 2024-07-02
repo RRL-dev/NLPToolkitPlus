@@ -1,41 +1,54 @@
-"""The module defines the ContentSynthesizer abstract base class (ABC).
+"""The module defines the ContentSynthesizer base class using Pydantic BaseModel.
 
 Classes:
-    ContentSynthesizer (ABC): Provides a framework for synthesizing responses from textual context.
+    ContentSynthesizer (BaseModel): Provides a framework for synthesizing responses from textual context.
 """
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from typing import Any
+
+from pydantic import BaseModel, Field
 
 
-class ContentSynthesizer(ABC):
-    """Abstract base class for synthesizing content based on a provided context window."""
+class ContentSynthesizer(BaseModel):
+    """Base class for synthesizing content based on a provided context window.
 
-    def __init__(self: ContentSynthesizer, max_context_window: int = 8000) -> None:
-        """Initialize the synthesizer with the maximum context window for the language model.
+    Attributes
+    ----------
+    max_context_window : int
+        Maximum number of tokens the language model can handle in a single request.
+    context : list[str]
+        Contextual information to help generate the response.
 
-        Args:
-        ----
-            max_context_window (int): The maximum number of tokens the language model can handle in a single request.
+    """
 
-        """
-        self.max_context_window: int = max_context_window
+    max_context_window: int = Field(
+        default=8000,
+        description="Maximum number of tokens the language model can handle in a single request.",
+    )
+    context: list[str] = Field(
+        default_factory=list,
+        description="Contextual information to help generate the response.",
+    )
+
+    class Config:
+        """Pydantic configuration class to allow arbitrary types."""
+
+        arbitrary_types_allowed = True
 
     @abstractmethod
-    def generate_response(
-        self: ContentSynthesizer,
-        context: list[str],
-    ) -> str:
+    def generate_response(self: ContentSynthesizer, inputs: dict[str, Any]) -> dict[str, str]:
         """Generate a response based on the provided context.
 
         Args:
         ----
-            context (list[str]): Contextual information to help generate the response.
+            inputs (dict[str, Any]): Inputs to the content synthesizer.
 
         Returns:
         -------
-            str: The generated response.
+            dict[str, str]: The generated response.
 
         """
         msg = "This method needs to be overridden in subclasses."
