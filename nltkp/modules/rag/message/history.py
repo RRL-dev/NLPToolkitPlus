@@ -6,37 +6,72 @@ Classes:
 
 from __future__ import annotations
 
-from functools import partial
-from typing import TYPE_CHECKING, Literal
+from typing import Any
 
 from pydantic import ValidationError
 
+from nltkp.factory import ChainedRunnable
+from nltkp.modules.rag.retriever import SearchInput
 from nltkp.utils import LOGGER
 
-from .handler import HandlerMessage
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
+from .handler import Message
 
 
-class HistoryMessage(HandlerMessage):
+class HistoryMessage(
+    ChainedRunnable[dict[str, Any] | str, SearchInput | list[dict[str, str]]],
+):
     """Extended model for managing a conversation with additional functionalities for updating messages."""
+
+    def __init__(self: HistoryMessage) -> None:
+        """Initialize the HistoryMessage instance."""
+        super().__init__(func=self.process_message)
+        self.messages: list[Message] = []
+
+    def add_message(self: HistoryMessage, role: str, content: str) -> None:
+        """Add a new message to the conversation."""
+        new_message = Message(role=role, content=content)
+        self.messages.append(new_message)
+
+    def process_message(
+        self: HistoryMessage,
+        inputs: dict[str, Any] | str,
+    ) -> SearchInput | list[dict[str, str]]:
+        """Process the incoming data and either update the conversation history or prepare it for a search operation."""
+        if isinstance(inputs, str):
+            self.add_or_update_system_message_with_context(context=inputs)
+            return self.format()
+
+        search_input = SearchInput(top_k=0, sentences="")
+        try:
+            if isinstance(inputs, dict):
+                query: str = inputs.get("query", "")
+                top_k: int = inputs.get("top_k", 5)
+                if query:
+                    self.add_message(role="user", content=query)
+                    search_input = SearchInput(top_k=top_k, sentences=query)
+                if "context" in inputs:
+                    self.add_or_update_system_message_with_context(context=inputs["context"])
+
+        except KeyError as e:
+            LOGGER.error("Key error: %s", e)
+            msg: str = f"Key error: {e}"
+            raise ValueError(msg) from e
+
+        return search_input
 
     def add_or_update_system_message_with_context(self: HistoryMessage, context: str) -> None:
         """Add or update a system message formatted with dynamic context information."""
         content: str = (
-            "You are a friendly chatbot, answer. Use the following context if it's available "
+            "You are a friendly chatbot user answer. Use the following context if it's available "
             "but don't quote from source, phrase in your own words. If you do not know, "
             f"answer that you don't have knowledge on that. Here is the context: {context}"
         )
 
-        # Check for existing system message to update
         for message in reversed(self.messages):
             if message.role == "system":
                 message.content = content
-                return  # Update found and applied, exit function
+                return
 
-        # If no existing system message, add a new one
         self.add_message(role="system", content=content)
 
     def update_system_message(self: HistoryMessage, content: str) -> None:
@@ -53,25 +88,30 @@ class HistoryMessage(HandlerMessage):
             if message.role == role:
                 message.content = content
                 return
-        msg: str = f"No message found with role {role}."
+        msg = f"No message found with role {role}."
         raise ValueError(msg)
 
-    @classmethod
-    def get_update_system_message(cls: type[HistoryMessage], instance: HistoryMessage) -> Callable[[str], None]:
-        """Get a 'partial' for updating system messages."""
-        return partial(instance.update_system_message)
+    def format(self: HistoryMessage) -> list[dict[str, str]]:
+        """Convert the messages to a list of dictionaries, ensuring the system message is first."""
+        formatted_messages: list[dict[str, str]] = [
+            {"role": message.role, "content": message.content} for message in self.messages
+        ]
 
-    @classmethod
-    def get_update_user_message(cls: type[HistoryMessage], instance: HistoryMessage) -> Callable[[str], None]:
-        """Get a 'partial' for updating user messages."""
-        return partial(instance.update_user_message)
+        system_message: dict[str, str] | None = next(
+            (msg for msg in formatted_messages if msg["role"] == "system"),
+            None,
+        )
+        if system_message:
+            formatted_messages.remove(system_message)
+            formatted_messages.insert(0, system_message)
+
+        return formatted_messages
 
     def __str__(self: HistoryMessage) -> str:
         """Provide a string representation of the entire conversation, formatted for readability."""
-        conversation: list[str] = []
-        for message in self.messages:
-            prefix: Literal["System: ", "User: "] = "System: " if message.role == "system" else "User: "
-            conversation.append(prefix + message.content)
+        conversation = [
+            f"{('System:' if message.role == 'system' else 'User:')} {message.content}" for message in self.messages
+        ]
         return "\n".join(conversation)
 
 
@@ -82,12 +122,11 @@ if __name__ == "__main__":
         chat.add_message(role="system", content="Initial system message.")
         chat.add_message(role="user", content="Initial user query.")
 
-        # Using the partial functions to update messages
-        system_updater = HistoryMessage.get_update_system_message(instance=chat)
-        user_updater = HistoryMessage.get_update_user_message(instance=chat)
-        system_updater("Revised system response.")
-        user_updater("Revised user query.")
-
         LOGGER.info(msg=chat)
+
+        # Print formatted messages
+        formatted_messages: list[dict[str, str]] = chat.format()
+        LOGGER.info("Formatted messages: %s", formatted_messages)
+
     except (ValidationError, ValueError) as e:
         LOGGER.error("Error during message update: %s", e)
