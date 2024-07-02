@@ -1,0 +1,3 @@
+path: 'resources/data/documents'
+text: 'resources/data/documents/texts'
+embeddings: 'resources/data/documents/embeddings'
