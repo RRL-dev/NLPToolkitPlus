@@ -1,7 +1,7 @@
 """Basic functionality for serialization."""
 
 from pickle import HIGHEST_PROTOCOL, dump, load
-from typing import TypeVar
+from typing import Any, TypeVar
 
 from yaml import safe_load
 
@@ -47,7 +47,7 @@ def dump_pickle(*, data: object, filepath: str, mode: str = "wb") -> None:
         dump(obj=data, file=file, protocol=HIGHEST_PROTOCOL)
 
 
-def load_yaml(file_path: str) -> dict[str, str | int | float | bool | None | list | dict] | dict:
+def load_yaml(file_path: str) -> dict[Any, Any]:
     """Load a YAML file and return its contents as a dictionary.
 
     Args:
@@ -66,7 +66,5 @@ def load_yaml(file_path: str) -> dict[str, str | int | float | bool | None | lis
     with open(file=file_path, encoding="utf-8") as obj:  # noqa: PTH123
         file_content: str = obj.read()
 
-    data: dict[str, str | int | float | bool | None | list | dict] = (
-        safe_load(stream=file_content) or {}
-    )
+    data: Any | dict[Any, Any] = safe_load(stream=file_content) or {}
     return data
