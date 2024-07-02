@@ -13,8 +13,6 @@ from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
-from torch import Tensor
-
 if TYPE_CHECKING:
     from transformers.tokenization_utils import PreTrainedTokenizer
     from transformers.tokenization_utils_fast import PreTrainedTokenizerFast
@@ -39,7 +37,7 @@ class ReturnType(Enum):
 def postprocess(
     tokenizer: PreTrainedTokenizer | PreTrainedTokenizerFast,
     model_outputs: dict,
-    return_type: ReturnType = ReturnType.FULL_TEXT,
+    return_type: ReturnType = ReturnType.NEW_TEXT,
     *,
     clean_up_tokenization_spaces: bool = True,
 ) -> list[dict]:
@@ -54,7 +52,7 @@ def postprocess(
 
     Returns:
     -------
-        List[dict]: A list of dictionaries containing processed records based on the return type.
+        list[dict]: A list of dictionaries containing processed records based on the return type.
 
     Raises:
     ------
