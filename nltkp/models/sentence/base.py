@@ -45,16 +45,25 @@ class BaseSentenceModel(nn.Module):
 
     """
 
-    def __init__(self: BaseSentenceModel, model_name: str, pooling_modes: dict | None) -> None:
-        """Initialize the BaseSentenceModel model with specified model path or name."""
+    def __init__(self: BaseSentenceModel, model_name: str, pooling_modes: dict[str, bool]) -> None:
+        """Initialize the BaseSentenceModel with a model name and pooling modes.
+
+        Args:
+        ----
+            model_name (str): Identifier for the pre-trained model from Hugging Face Transformers.
+            pooling_modes (dict[str, bool]): Dictionary specifying pooling strategies.
+
+        Raises:
+        ------
+            RuntimeError: If the model cannot be loaded due to an I/O error or configuration error.
+
+        """
         super().__init__()
-
-        if pooling_modes is None:
-            pooling_modes = {"cls": True}
-
-        LOGGER.info("The pooling modes @ BaseSentenceModel are: \n %s", pooling_modes)
+        LOGGER.info("Initializing BaseSentenceModel with model: %s", model_name)
+        LOGGER.info("The pooling modes are: %s", pooling_modes)
 
         self.pooling = BasePooling(**pooling_modes)
+
         self._tokenizer: PreTrainedTokenizer | PreTrainedTokenizerFast | None = None
 
         self.model_name: str = model_name
@@ -74,6 +83,7 @@ class BaseSentenceModel(nn.Module):
 
         """
         if self._tokenizer is None:
+            LOGGER.info("Loading tokenizer for model: %s", self.model_name)
             self._tokenizer = AutoTokenizer.from_pretrained(
                 pretrained_model_name_or_path=self.model_name,
             )
@@ -94,7 +104,7 @@ class BaseSentenceModel(nn.Module):
                     pretrained_model_name_or_path=self.model_name,
                 ),
             )
-            LOGGER.info("Model %s registry successfully.", self.model_name)
+            LOGGER.info("Model %s registered successfully.", self.model_name)
 
         except OSError as e:
             LOGGER.error("Failed to load the model due to I/O error: %s", e)
@@ -164,7 +174,8 @@ class BaseSentenceModel(nn.Module):
             list[Tensor] | ndarray | Tensor: The embeddings as a list of tensors, a single tensor, or a numpy array,
                                             depending on the `convert_to_numpy` flag.
 
-        """  # noqa: E501
+        """
+        LOGGER.info("Encoding sentences with model: %s", self.model_name)
         if isinstance(sentences, str):
             sentences = [sentences]
 
@@ -182,7 +193,6 @@ class BaseSentenceModel(nn.Module):
             )
 
             encoded_input = encoded_input.to(device=self.device)
-            # encoded_input = {key: val.to(self.device) for key, val in encoded_input.items()}  # noqa: ERA001, E501
             with inference_mode():
                 embeddings: Tensor = self(encoded_input)
 
@@ -193,6 +203,7 @@ class BaseSentenceModel(nn.Module):
 
         if convert_to_numpy:
             # Convert all embeddings to NumPy arrays
+            LOGGER.info("Converting embeddings to numpy arrays.")
             return stack(arrays=[emb.cpu().numpy() for emb in all_embeddings])
         # Concatenate all tensors to form a single tensor
         return cat(tensors=all_embeddings, dim=0)
