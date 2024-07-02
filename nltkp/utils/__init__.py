@@ -21,10 +21,6 @@ DATASET_CFG_PATH: Path = ROOT / "cfg/dataset/base.yaml"
 DATASET_CFG_DICT: Any | dict[Any, Any] = load_yaml(file_path=DATASET_CFG_PATH.as_posix())
 DATASET_CFG = SimpleNamespace(**DATASET_CFG_DICT)
 
-EMBEDDINGS_CFG_PATH: Path = ROOT / "cfg/embeddings/documents.yaml"
-EMBEDDINGS_CFG_DICT: Any | dict[Any, Any] = load_yaml(file_path=EMBEDDINGS_CFG_PATH.as_posix())
-EMBEDDINGS_CFG = SimpleNamespace(**EMBEDDINGS_CFG_DICT)
-
 
 class CustomFormatter(logging.Formatter):
     """Custom formatter to add colors and timestamps to logs."""
