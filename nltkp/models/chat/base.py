@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from pydantic import BaseModel, Field
 from torch import LongTensor, Tensor, bfloat16, device, inference_mode, nn
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.tokenization_utils_base import BatchEncoding
@@ -20,6 +21,28 @@ if TYPE_CHECKING:
     from transformers.tokenization_utils_fast import PreTrainedTokenizerFast
 
 
+class BaseChatConfig(BaseModel):
+    """Configuration settings for the neural network model used for generating responses.
+
+    Attributes
+    ----------
+        model_name (str): Model name for generating responses, typically a pre-trained model identifier.
+        temperature (float): Softens the next token probabilities; higher temperature results in more random completions.
+        top_k (int): Filters the proposed tokens to only the top k before applying softmax, providing randomness.
+        top_p (float): Nucleus sampling that selects the smallest set of tokens whose cumulative probability is above p.
+        max_new_tokens (int): Maximum number of new tokens to generate.
+        do_sample (bool): Whether or not to use sampling; set to true to have more diverse responses.
+
+    """  # noqa: E501
+
+    model_name: str = Field(default=..., description="Model name for generating responses.")
+    temperature: float = Field(default=0.9, description="Temperature for response generation.")
+    top_k: int = Field(default=50, description="Top K tokens to be considered in generation.")
+    top_p: float = Field(default=0.95, description="Top P cumulative probability threshold in generation.")
+    max_new_tokens: int = Field(default=256, description="Maximum new tokens to generate.")
+    do_sample: bool = Field(default=True, description="Flag to determine if sampling is used.")
+
+
 class BaseChatModel(nn.Module):
     """PyTorch module for integrating and utilizing Hugging Face's causal language models.
 
@@ -27,22 +50,23 @@ class BaseChatModel(nn.Module):
     ensuring that they are properly set up for inference tasks.
     """
 
-    def __init__(self: BaseChatModel, model_name: str) -> None:
+    def __init__(self: BaseChatModel, config: BaseChatConfig) -> None:
         """Initialize a BaseChatModel instance with the specified model name.
 
         Args:
         ----
-            model_name (str): The name of the model to load.
+            config (str): The model configuration.
 
         The constructor initializes the tokenizer and loads the model,
         setting up the device configuration for running model inference.
 
         """
         super().__init__()
+        self.config: BaseChatConfig = config
         self._tokenizer: PreTrainedTokenizer | PreTrainedTokenizerFast | None = None
 
-        self.model_name: str = clean_module_name(name=model_name)
-        self.module_name: str = model_name
+        self.model_name: str = clean_module_name(name=config.model_name)
+        self.module_name: str = config.model_name
         self.register_model()
 
         self.device: device = set_device()
@@ -98,6 +122,21 @@ class BaseChatModel(nn.Module):
             raise RuntimeError(
                 msg,
             ) from e
+
+    def forward_params(self: BaseChatModel) -> dict[str, Any]:
+        """Preprocess the ChatConfig to generate model arguments.
+
+        Returns
+        -------
+            dict[str, Any]: A dictionary containing the model arguments for generation.
+
+        """
+        return {
+            "top_k": self.config.top_k,
+            "top_p": self.config.top_p,
+            "do_sample": self.config.do_sample,
+            "temperature": self.config.temperature,
+        }
 
     @inference_mode()
     def _forward(
@@ -156,7 +195,6 @@ class BaseChatModel(nn.Module):
     def forward(
         self: BaseChatModel,
         messages: list[dict[str, str]],
-        **forward_params: dict,
     ) -> list[dict[Any, Any]]:
         """Process text input to generate text responses using a pre-trained language model.
 
@@ -166,7 +204,6 @@ class BaseChatModel(nn.Module):
         Args:
         ----
             messages (list[dict[str, str]]): The text prompt to which the model generate a response.
-            **forward_params (dict): Additional keyword arguments to the model's generate method.
 
         Returns:
         -------
@@ -189,6 +226,6 @@ class BaseChatModel(nn.Module):
 
         model_outputs: dict[str, str | Tensor] = self._forward(
             model_inputs=model_inputs,
-            **forward_params,
+            **self.forward_params(),
         )
         return postprocess(tokenizer=self.tokenizer, model_outputs=model_outputs)
