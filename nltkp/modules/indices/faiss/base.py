@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from faiss import IndexFlatIP, IndexFlatL2  # Make sure to import necessary Faiss classes
+from faiss import IndexFlatIP, IndexFlatL2
 from numpy import dtype, float32, int32, ndarray
 from torch import Tensor
 
@@ -37,12 +37,12 @@ class BaseFaissAnn(BaseAnn):
     Attributes
     ----------
         index_type (str): Type of index, "L2" for Euclidean or "IP" for inner-product.
-        index (Optional[faiss.IndexFlatL2 | faiss.IndexFlatIP]): The Faiss index object.
-        embeddings (Optional[ndarray]): The embeddings stored in the index.
+        index (faiss.IndexFlatL2 | faiss.IndexFlatIP): The Faiss index object.
+        embeddings (NDArray[float32]): The embeddings stored in the index.
 
     """
 
-    def __init__(self: BaseFaissAnn, index_type: str = "L2") -> None:
+    def __init__(self: BaseFaissAnn, index_type: str) -> None:
         """Initialize the BaseFaissAnn with a specific index type.
 
         Args:
@@ -50,10 +50,9 @@ class BaseFaissAnn(BaseAnn):
             index_type (str): Specifies the type of Faiss index to create ("L2" or "IP").
 
         """
-        super().__init__()
         self.index_type: str = index_type
         self.index: IndexFlatIP | IndexFlatL2
-        self.embeddings: ndarray
+        self.embeddings: NDArray[float32]
 
     def _fit(self: BaseFaissAnn, embeddings: NDArray[float32]) -> None:
         """Initialize the Faiss index and add embeddings.
@@ -63,7 +62,7 @@ class BaseFaissAnn(BaseAnn):
             embeddings (NDArray[float32]): The data to fit into the ANN structure.
 
         """
-        LOGGER.info(msg="Start fit BaseFaissAnn")
+        LOGGER.info("Start fitting BaseFaissAnn with embeddings of shape %s", embeddings.shape)
         if not isinstance(embeddings, ndarray):
             msg: str = f"Embeddings must be an ndarray, got {type(embeddings).__name__}"
             raise TypeError(msg)
@@ -83,19 +82,19 @@ class BaseFaissAnn(BaseAnn):
 
     def query(
         self: BaseFaissAnn,
+        top_k: int,
         embedding: Tensor | ndarray[Any, dtype[Any]],
-        n_neighbors: int,
     ) -> tuple[NDArray[float32], NDArray[int32]]:
         """Query the index for nearest neighbors.
 
         Args:
         ----
+            top_k (int): The number of nearest neighbors to retrieve.
             embedding (Tensor | ndarray[Any, dtype[Any]): Embedding vector query nearest neighbors.
-            n_neighbors (int): The number of nearest neighbors to retrieve.
 
         Returns:
         -------
-            tuple[NDArray[float32], ndarray]: Distances and indices of the nearest neighbors.
+            tuple[NDArray[float32], NDArray[int32]]: Distances and indices of the nearest neighbors.
 
         Raises:
         ------
@@ -117,9 +116,10 @@ class BaseFaissAnn(BaseAnn):
         if embedding.ndim == 1:
             embedding = embedding.reshape(1, -1)
 
-        LOGGER.info("Query embedding with number of neighbors: %s", n_neighbors)
+        LOGGER.info("Query embedding with number of neighbors: %s", top_k)
 
         indices: NDArray[int32]
         distances: NDArray[float32]
-        distances, indices = self.index.search(embedding, n_neighbors)  # type: ignore  # noqa: PGH003
+        distances, indices = self.index.search(embedding, top_k)  # type: ignore  # noqa: PGH003\
+        LOGGER.info("Query results: distances=%s, indices=%s", distances, indices)
         return distances, indices  # Skipping self in results
