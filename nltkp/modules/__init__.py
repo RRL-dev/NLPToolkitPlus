@@ -1,5 +1,8 @@
 from .agent import SqlAgent
-from .indices import BaseAnn, FaissSimilaritySearch
-from .loader import CharacterTextSplitter
+from .reader import FolderTextSplitter, FolderTextSplitterConfig
 
-__all__: list[str] = ["SqlAgent", "CharacterTextSplitter", "BaseAnn", "FaissSimilaritySearch"]
+__all__: list[str] = [
+    "SqlAgent",
+    "FolderTextSplitter",
+    "FolderTextSplitterConfig",
+]
