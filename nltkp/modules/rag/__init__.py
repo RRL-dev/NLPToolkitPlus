@@ -1,9 +1,8 @@
-from .generation import ChatGeneration
-from .message import HistoryMessage, SimpleSummarizer
+from .message import FewShotHistoryMessage, HistoryMessage, SimpleSummarizer
 from .retriever import FaissRetrieval, RetrievalConfig, SearchOutput
 
 __all__: list[str] = [
-    "ChatGeneration",
+    "FewShotHistoryMessage",
     "HistoryMessage",
     "SimpleSummarizer",
     "FaissRetrieval",

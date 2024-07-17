@@ -62,9 +62,16 @@ class HistoryMessage(
     def add_or_update_system_message_with_context(self: HistoryMessage, context: str) -> None:
         """Add or update a system message formatted with dynamic context information."""
         content: str = (
-            "You are a friendly chatbot user answer. Use the following context if it's available "
-            "but don't quote from source, phrase in your own words. If you do not know, "
-            f"answer that you don't have knowledge on that. Here is the context: {context}"
+            "You are a knowledgeable and friendly chatbot representing SuperSmart, a high-tech software company "
+            "providing self-checkout solutions for the retail industry. "
+            "Answer questions concisely using only the provided context. "
+            "Use the provided context to answer questions accurately, paraphrasing in your own words. "
+            "If the question is not related to SuperSmart's self-checkout solutions or services, "
+            "or if the context and the answer do not rely on the SuperSmart software company, state: "
+            "'I do not know.' "
+            "Do not answer if you do not have context, "
+            "or if the question is outside the scope of SuperSmart's self-checkout solutions. "
+            f"Here is the context: {context}"
         )
 
         for message in reversed(self.messages):
