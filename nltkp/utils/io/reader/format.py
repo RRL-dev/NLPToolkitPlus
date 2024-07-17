@@ -1,4 +1,5 @@
-"""The module provides utilities for reading and caching files using pandas, with support for CSV and XLSX formats."""  # noqa: E501
+"""The module provides utilities for reading and caching files using pandas, with support for CSV and XLSX formats."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, final
@@ -53,17 +54,10 @@ class DataFormat:
         if file_path.endswith(".csv") and "csv" in self._func.__name__:
             return self._func(file_path)
 
-        if (
-            file_path.endswith(".xlsx")
-            or file_path.endswith(".xls")
-            and "xlsx" in self._func.__name__
-        ):
+        if file_path.endswith(".xlsx") or file_path.endswith(".xls") and "xlsx" in self._func.__name__:
             return self._func(file_path)
 
-        msg = (
-            f"pandas cannot handle file type {file_path} "
-            f"with the function: {self._func.__name__}"
-        )
+        msg = f"pandas cannot handle file type {file_path} with the function: {self._func.__name__}"
         raise NotImplementedError(
             msg,
         )
