@@ -122,4 +122,4 @@ class BaseFaissAnn(BaseAnn):
         distances: NDArray[float32]
         distances, indices = self.index.search(embedding, top_k)  # type: ignore  # noqa: PGH003\
         LOGGER.info("Query results: distances=%s, indices=%s", distances, indices)
-        return distances, indices  # Skipping self in results
+        return distances, indices
