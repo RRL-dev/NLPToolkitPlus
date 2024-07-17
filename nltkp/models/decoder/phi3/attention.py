@@ -12,8 +12,6 @@ from transformers import logging
 from transformers.cache_utils import Cache
 from transformers.models.phi3.configuration_phi3 import Phi3Config
 
-from nltkp.models.utils import create_general_causal_mask
-
 from .embedding import Phi3RotaryEmbedding, apply_rotary_pos_emb
 
 logger: Logger = logging.get_logger(name=__name__)

@@ -95,7 +95,7 @@ class BasePooling:
         -------
             List[Tensor]: The list containing all the pooled results.
 
-        """  # noqa: E501
+        """
         for func in self.pooling_functions:
             func(output_vectors, features)
         return output_vectors
