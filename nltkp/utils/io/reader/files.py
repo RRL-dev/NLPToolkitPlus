@@ -1,4 +1,4 @@
-"""The module contains the FilesReader class for reading and caching files based on configuration."""  # noqa: E501
+"""The module contains the FilesReader class for reading and caching files based on configuration."""
 
 from __future__ import annotations
 
