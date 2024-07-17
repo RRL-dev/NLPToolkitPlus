@@ -11,7 +11,7 @@ def get_token_embeddings(features: dict[str, Any]) -> torch.Tensor:
 
     Args:
     ----
-        features (Dict[str, Any]): Dictionary containing features including 'token_embeddings'.
+        features (dict[str, Any]): Dictionary containing features including 'token_embeddings'.
 
     Returns:
     -------
@@ -37,12 +37,12 @@ def cls_token_vector(
 
     Args:
     ----
-        output_vectors (List[torch.Tensor]): List where the CLS token vector will be appended.
+        output_vectors (list[torch.Tensor]): List where the CLS token vector will be appended.
         features (dict[str, Any]): Dictionary containing features. 'token_embeddings'.
 
     Returns:
     -------
-        List[torch.Tensor]: The list with the appended CLS token vector.
+        list[torch.Tensor]: The list with the appended CLS token vector.
 
     """
     token_embeddings: torch.Tensor = get_token_embeddings(features=features)
@@ -69,9 +69,9 @@ def max_token_vector(
 
     Note:
     ----
-        The function masks out irrelevant tokens by setting them to a very large negative value before taking the maximum.
+        The function masks out irrelevant tokens by setting them to a very large negative value before the maximum.
 
-    """  # noqa: E501
+    """
     token_embeddings: torch.Tensor = get_token_embeddings(features=features)
     attention_mask: torch.Tensor = features["attention_mask"]
 
@@ -110,7 +110,7 @@ def sum_embeddings_mask(
         torch.Tensor: The clamped sum mask tensor to ensure it does not include zero values, avoiding
                       division by zero in subsequent operations.
 
-    """  # noqa: E501
+    """
     if "token_weights_sum" in features:
         weights_sum: torch.Tensor = features["token_weights_sum"]
         if weights_sum.dim() == 1:
@@ -146,7 +146,7 @@ def mean_token_vector(
     ------
         ValueError: If the specified function is not recognized.
 
-    """  # noqa: E501
+    """
     if func not in ["mean", "mean_sqrt"]:
         msg: str = f"Function not in ['mean', 'mean_sqrt'], got {func}"
         raise ValueError(msg)
@@ -195,9 +195,9 @@ def weighted_mean_token_vector(
 
     Returns:
     -------
-        List[torch.Tensor]: The list with the appended weighted mean token vector.
+        list[torch.Tensor]: The list with the appended weighted mean token vector.
 
-    """  # noqa: E501
+    """
     token_embeddings: torch.Tensor = get_token_embeddings(features=features)
     attention_mask: torch.Tensor = features["attention_mask"]
 
