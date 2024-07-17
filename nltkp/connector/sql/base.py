@@ -99,13 +99,9 @@ class SQLDatabase:
 
         """
         columns: list[str] = [f'  "{col.name}" {str(object=col.type)}' for col in table.columns]
-        primary_key: list[str] = [
-            f'PRIMARY KEY ("{col.name}")' for col in table.primary_key.columns
-        ]
+        primary_key: list[str] = [f'PRIMARY KEY ("{col.name}")' for col in table.primary_key.columns]
         constraints: list[str] = primary_key + [
-            str(object=cons)
-            for cons in table.constraints
-            if not str(object=cons).startswith("PRIMARY KEY")
+            str(object=cons) for cons in table.constraints if not str(object=cons).startswith("PRIMARY KEY")
         ]
         columns_and_constraints: str = ",\n".join(columns + constraints)
         create_statement: str = f'CREATE TABLE "{table.name}" (\n{columns_and_constraints}\n);'
@@ -119,11 +115,9 @@ class SQLDatabase:
             str: Concatenated SQL CREATE statements for each table.
 
         """
-        return "\n".join(
-            self.get_table_create_statement(table=table) for table in self.metadata.tables.values()
-        )
+        return "\n".join(self.get_table_create_statement(table=table) for table in self.metadata.tables.values())
 
-    def run(
+    def run(  # noqa: PLR0913
         self: SQLDatabase,
         command: str | Executable,
         fetch: Literal["all", "one", "cursor"] = "all",
@@ -136,17 +130,17 @@ class SQLDatabase:
 
         Args:
         ----
-            command (Union[str, Executable]): The SQL command or query to execute.
-            fetch (Literal["all", "one", "cursor"], optional): The fetching strategy for query results.
-            include_columns (bool, optional): If True, include column names in the result set.
-            parameters (Optional[Dict[str, Any]], optional): Parameters for parameterized queries.
-            execution_options (Optional[Dict[str, Any]], optional): Options to be passed to the execution context.
+            command (str | Executable): The SQL command or query to execute.
+            fetch (Literal["all", "one", "cursor"]): The fetching strategy for query results.
+            include_columns (bool): If True, include column names in the result set.
+            parameters (dict[str, Any] | None): Parameters for parameterized queries.
+            execution_options (dict[str, Any] | None): Options to be passed to the execution context.
 
         Returns:
         -------
-            Union[str, Sequence[Dict[str, Any]], Result[Any]]: The result of the executed command.
+            str | Sequence[dict[str, Any]] | Result[Any]: The result of the executed command.
 
-        """  # noqa: E501
+        """
         result: str | Sequence[dict[str, Any]] | Result[Any] = self._execute(
             command=command,
             fetch=fetch,
@@ -180,25 +174,24 @@ class SQLDatabase:
 
         Args:
         ----
-            command (Union[str, Executable, TextClause]): The SQL command or Executable to run.
+            command (str | Executable | TextClause): The SQL command or Executable to run.
             fetch (Literal["all", "one", "cursor"]): Determines the fetching strategy.
-            parameters (Optional[Dict[str, Any]], optional): SQL command parameters.
-            execution_options (Optional[Dict[str, Any]], optional): SQLAlchemy execution options.
+            parameters (dict[str, Any] | None): SQL command parameters.
+            execution_options (dict[str, Any] | None): SQLAlchemy execution options.
 
         Returns:
         -------
-            Union[Sequence[Dict[str, Any]], CursorResult]: Result of the SQL command.
+            Sequence[dict[str, Any]] | CursorResult: Result of the SQL command.
 
         """
         with self.engine.connect() as connection:
-            stmt: TextClause | Executable = (
-                text(text=command) if isinstance(command, str) else command
-            )
+            stmt: TextClause | Executable = text(text=command) if isinstance(command, str) else command
             if execution_options:
                 stmt = stmt.execution_options(**execution_options)
 
             cursor: CursorResult[Any] = connection.execute(
-                statement=stmt, parameters=parameters or {}
+                statement=stmt,
+                parameters=parameters or {},
             )
 
             if cursor.returns_rows:

@@ -1,4 +1,4 @@
-"""The module contains the FilesToSQL class for interacting with datasets and saving them to an SQL database."""  # noqa: E501
+"""The module contains the FilesToSQL class for interacting with datasets and saving them to an SQL database."""
 
 from __future__ import annotations
 
@@ -62,7 +62,7 @@ class FilesToSQL(FilesReader):
         ----
             table_name (str): The name of the table to save the DataFrame to.
             df (DataFrame): The DataFrame to save.
-            if_exists (str, optional): What to do if the table already exists. Default is 'replace'.
+            if_exists (str): What to do if the table already exists. Default is 'replace'.
 
         """
         if self.engine:
@@ -79,7 +79,7 @@ class FilesToSQL(FilesReader):
 
         Args:
         ----
-            if_exists (str, optional): What to do if the table already exists. Default is 'replace'.
+            if_exists (str): What to do if the table already exists. Default is 'replace'.
 
         """
         for table_name, df in self.cache.items():
