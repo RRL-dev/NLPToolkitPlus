@@ -1,10 +1,8 @@
 """Model utils."""
 
-from __future__ import annotations
-
 import re
 
-from torch import Tensor, device
+from torch import Size, Tensor, device, dtype, float16, full, triu, zeros
 from transformers.tokenization_utils_base import BatchEncoding
 
 
@@ -64,3 +62,73 @@ def move_tensors_to_device(batch_encoding: BatchEncoding, device: device) -> Bat
 
     # Create a new BatchEncoding with the updated data
     return BatchEncoding(data=updated_data)
+
+
+def create_upper_triangular_causal_mask(
+    attn_weights_shape: Size,
+    dtype: dtype = float16,
+    device: device = "cuda",  # type: ignore  # noqa: PGH003
+    inf_value: float = -65504.0,
+) -> Tensor:
+    """Create an upper triangular causal mask with the same shape as the attention weights.
+
+    Args:
+    ----
+        attn_weights_shape (torch.Size): The shape of the attention weights tensor.
+        dtype (torch.dtype): The data type of the mask. Default is torch.float16.
+        device (torch.device): The device to create the mask on. Default is 'cuda'.
+        inf_value (float): The value to use for masking (e.g., -infinity). Default is -65504.0.
+
+    Returns:
+    -------
+        torch.Tensor: An upper triangular causal mask with the same shape as the attention weights.
+
+    """
+    batch_size, num_heads, seq_len, _ = attn_weights_shape
+    mask: Tensor = triu(
+        input=full(size=(seq_len, seq_len), fill_value=inf_value, dtype=dtype, device=device),
+        diagonal=1,
+    )
+    mask = mask.unsqueeze(dim=0).unsqueeze(dim=0)  # Shape [1, 1, seq_len, seq_len]
+    mask = mask.expand(batch_size, num_heads, -1, -1)  # Shape [batch_size, num_heads, seq_len, seq_len]
+    mask.masked_fill_(mask=mask == inf_value, value=0.0)  # Set diagonal and lower triangular to 0
+    return mask + triu(
+        input=full(size=(seq_len, seq_len), fill_value=inf_value, dtype=dtype, device=device),
+        diagonal=1,
+    )
+
+
+def create_general_causal_mask(
+    attn_weights_shape: Size,
+    dtype: dtype = float16,
+    device: device = "cuda",  # type: ignore  # noqa: PGH003
+    inf_value: float = -65504.0,
+) -> Tensor:
+    """Create a causal mask that only affects the last seq_len elements in the last dimension of the attention weights.
+
+    Args:
+    ----
+        attn_weights_shape (torch.Size): The shape of the attention weights tensor.
+        dtype (torch.dtype): The data type of the mask. Default is torch.float16.
+        device (torch.device): The device to create the mask on. Default is 'cuda'.
+        inf_value (float): The value to use for masking (e.g., -infinity). Default is -65504.0.
+
+    Returns:
+    -------
+        torch.Tensor: A causal mask with the same shape as the attention weights.
+
+    """
+    seq_len: int
+    num_heads: int
+    batch_size: int
+    total_seq_len: int
+    batch_size, num_heads, seq_len, total_seq_len = attn_weights_shape
+
+    # Create a mask of zeros
+    mask: Tensor = zeros(size=(seq_len, total_seq_len), dtype=dtype, device=device)
+
+    # Mask the last seq_len elements
+    for i in range(seq_len):
+        mask[i, total_seq_len - seq_len + i + 1 :] = inf_value
+
+    return mask.unsqueeze(dim=0).unsqueeze(dim=0).expand(batch_size, num_heads, -1, -1)
