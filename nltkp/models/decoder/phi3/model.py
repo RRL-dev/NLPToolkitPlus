@@ -5,7 +5,6 @@ utilizing self-attention mechanisms and layer normalization.
 """
 
 from logging import Logger
-from re import I
 
 from torch import FloatTensor, Tensor, nn
 from transformers import logging
@@ -53,7 +52,7 @@ class Phi3Model(nn.Module):
         self._attn_implementation = Phi3Attention
         self.norm = Phi3RMSNorm(hidden_size=config.hidden_size, eps=config.rms_norm_eps)
 
-    def forward(  # noqa: PLR0913
+    def forward(
         self,
         kv_cache: tuple[tuple[FloatTensor]] | DynamicCache,
         input_ids: Tensor,
