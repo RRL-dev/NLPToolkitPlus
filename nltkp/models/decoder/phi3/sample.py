@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Any, cast
 
-from torch import FloatTensor, LongTensor, Tensor, argmax, cat, empty, float32, inference_mode, long, multinomial, ones
+from torch import FloatTensor, LongTensor, Tensor, argmax, cat, empty, float16, float32, inference_mode, long, multinomial, ones
 from torch.nn import Module
 from torch.nn.functional import softmax
 from transformers import AutoTokenizer, BitsAndBytesConfig, GenerationConfig, PretrainedConfig
@@ -72,7 +72,7 @@ class Phi3Sample(Module, BaseSampleGenerator):
         and assigns it to the `model` attribute of the instance.
 
         """
-        bnb_config = BitsAndBytesConfig(load_in_4bit=True)
+        bnb_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=float16)
 
         model = Phi3ForCausalLM.from_pretrained(
             pretrained_model_name_or_path=self._pretrained_model_name,
