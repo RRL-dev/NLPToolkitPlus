@@ -16,7 +16,8 @@ class SimpleSummarizer(ChainedRunnable[list[str], str]):
         """Initialize the SimpleSummarizer with optional parameters."""
         ChainedRunnable.__init__(self=self, func=self.generate_response)
 
-    def generate_response(self: SimpleSummarizer, inputs: list[str]) -> str:
+    @staticmethod
+    def generate_response(inputs: list[str]) -> str:
         """Return the provided text chunks as a single string.
 
         Args:
