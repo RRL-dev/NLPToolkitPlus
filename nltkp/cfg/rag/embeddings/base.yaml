@@ -1,3 +1,11 @@
 path: 'resources/data/documents'
-text: 'resources/data/documents/texts'
+chunks: 'resources/data/documents/chunks'
+raw_data: 'resources/data/documents/raw_data'
 embeddings: 'resources/data/documents/embeddings'
+model_name: 'sentence-transformers/multi-qa-mpnet-base-dot-v1'
+pooling_modes:
+  cls: true
+  max: false
+  mean: true
+  mean_sqrt: false
+  weighted_mean: false

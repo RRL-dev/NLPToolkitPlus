@@ -1,11 +1,10 @@
 top_k: 3
-dimension: 768
 index_type: "IP"
-directory: "resources/data/documents/embeddings"
+embeddings: 'resources/data/documents/embeddings'
 pooling_modes:
   cls: true
   max: false
   mean: true
   mean_sqrt: false
   weighted_mean: false
-model_type: "sentence-transformers/multi-qa-mpnet-base-dot-v1"
+model_name: "sentence-transformers/multi-qa-mpnet-base-dot-v1"

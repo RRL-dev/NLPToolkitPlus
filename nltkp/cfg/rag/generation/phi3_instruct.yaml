@@ -1,0 +1,6 @@
+model_name: "microsoft/Phi-3-mini-128k-instruct"
+temperature: 0.1
+top_k: 0
+top_p: 0.95
+do_sample: true
+max_new_tokens: 1024

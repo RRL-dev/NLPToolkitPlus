@@ -1,5 +1,6 @@
-model_name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-temperature: 0.1
-top_k: 50
-top_p: 0.95
+model_name: "meta-llama/Meta-Llama-3-8B-Instruct"
+temperature: 0.15
+top_k: 2
+top_p: 0.9
 do_sample: true
+max_new_tokens: 256

@@ -12,6 +12,7 @@ Constants:
     TINY_LLAMA_CFG: A SimpleNamespace object containing the TINY_LLAMA settings for easy access.
 
 """
+
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -20,5 +21,8 @@ from nltkp.utils import load_yaml
 
 FILE: Path = Path(__file__).resolve()
 
-TINY_LLAMA_DICT: Any | dict[Any, Any] = load_yaml(file_path=(FILE.parent / "tiny_llama.yaml").as_posix())
-TINY_LLAMA_CFG = SimpleNamespace(**TINY_LLAMA_DICT)
+PHI3_INST_DICT: Any | dict[Any, Any] = load_yaml(file_path=(FILE.parent / "phi3_instruct.yaml").as_posix())
+PHI3_INST_CFG = SimpleNamespace(**PHI3_INST_DICT)
+
+COT_DICT: Any | dict[Any, Any] = load_yaml(file_path=(FILE.parent / "cot.yaml").as_posix())
+COT_CFG = SimpleNamespace(**COT_DICT)
