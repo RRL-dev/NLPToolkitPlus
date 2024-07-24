@@ -84,8 +84,6 @@ class Phi3Attention(nn.Module):
             attention weights (if output_attentions is True), and updated past_key_value.
 
         """
-        logger.warning(msg="You are not running the flash-attention implementation, expect numerical differences.")
-
         batch_size: int
         query_size: int
 
@@ -158,7 +156,7 @@ class Phi3Attention(nn.Module):
         query_states: Tensor = qkv[..., :query_pos]
         return query_states, key_states, value_states
 
-    def _reshape_qkv(  # noqa: PLR0913
+    def _reshape_qkv(
         self,
         query_size: int,
         batch_size: int,
