@@ -1,3 +1,3 @@
-from .documents import LoadDocuments
+from .documents import BaseLoadDocuments, HierarchicalLoadDocuments
 
-__all__: list[str] = ["LoadDocuments"]
+__all__: list[str] = ["BaseLoadDocuments", "HierarchicalLoadDocuments"]
