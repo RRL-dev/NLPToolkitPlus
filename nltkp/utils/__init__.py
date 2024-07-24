@@ -12,7 +12,7 @@ from .path import search_files, suffix
 from .seed import set_global_seed
 from .serialization import load_yaml
 
-__all__: list[str] = ["search_files", "suffix", "set_device", "set_global_seed"]
+__all__: list[str] = ["search_files", "set_device", "set_global_seed", "suffix"]
 
 FILE: Path = Path(__file__).resolve()
 ROOT: Path = FILE.parents[1]
