@@ -21,10 +21,15 @@ classifiers = [
 
 dependencies = [
     "accelerate==0.31.0",
+    "bitsandbytes=="0.43.2",
+    "faiss-cpu==1.8.0.post1",
+    "flash-attn==2.6.2",
+    "langchain-text-splitters==0.2.2",
     "matplotlib==3.9.0",
-    "openai==1.27.0",
-    "pandas==1.5.3",
+    "numpy==1.26.4",
+    "pydantic==2.8.2",
     "python-dotenv==1.0.1",
+    "scikit-learn==1.5.1,
     "SQLAlchemy==2.0.30",
     "seaborn==0.13.2",
     "transformers==4.41.0",
@@ -37,7 +42,6 @@ faiss-cpu = ["faiss-cpu>=1.7.1"]
 faiss-gpu = ["faiss-gpu>=1.7.1"]
 dev = [
     "pytest",
-    "mypy",
     "flake8",
 ]
 
@@ -55,6 +59,7 @@ ignore_missing_imports = true
 
 [tool.ruff.lint]
 select = ["ALL"]
+ignore = ["CPY001"]
 
 [tool.ruff]
 line-length = 120
