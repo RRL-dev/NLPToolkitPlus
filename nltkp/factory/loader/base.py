@@ -72,8 +72,8 @@ class ModuleLoader:
         self.modules[module_name] = module
         return module
 
+    @staticmethod
     def _load_config(
-        self: ModuleLoader,
         file_path: str,
         config_class: type[BaseModel],
         module_name: str,
@@ -97,7 +97,7 @@ class ModuleLoader:
         resolved_dependencies: dict[str, BaseModel] = {}
         for module_name, module in dependencies.items():
             if isinstance(module, str):
-                if module in ("True", True):
+                if module in {"True", True}:
                     resolved_dependencies[module_name] = self.get_module(module_name=module_name)
                 else:
                     resolved_dependencies[module_name] = self.get_module(module_name=module)
@@ -108,8 +108,8 @@ class ModuleLoader:
                 )
         return resolved_dependencies
 
+    @staticmethod
     def _instantiate_dependency(
-        self: ModuleLoader,
         module: type[BaseModel],
         config_instance: BaseModel | None,
     ) -> BaseModel:
