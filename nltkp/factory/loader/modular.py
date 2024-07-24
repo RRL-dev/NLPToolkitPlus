@@ -47,5 +47,4 @@ class SingleModuleLoader(ModuleLoader):
     def load_module(self: SingleModuleLoader, module_name: str) -> BaseModel:
         """Load a specific module by name."""
         module: BaseModel = self.get_module(module_name=module_name)
-        self.__del__()
         return module
