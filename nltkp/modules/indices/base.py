@@ -32,14 +32,14 @@ class BaseAnn(ABC):
     def query(
         self: BaseAnn,
         top_k: int,
-        embedding: Tensor | ndarray[Any, dtype[Any]],
+        embeddings: Tensor | ndarray[Any, dtype[Any]],
     ) -> tuple[ndarray, ndarray]:
         """Search for nearest neighbors in the embedding pool.
 
         Args:
         ----
             top_k (int): The number of nearest neighbors to retrieve.
-            embedding (ndarray): The embedding vector to query for nearest neighbors.
+            embeddings (ndarray): The embeddings vector to query for nearest neighbors.
 
         Returns:
         -------

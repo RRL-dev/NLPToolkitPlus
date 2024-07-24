@@ -1,11 +1,11 @@
 from .message import FewShotHistoryMessage, HistoryMessage, SimpleSummarizer
-from .retriever import FaissRetrieval, RetrievalConfig, SearchOutput
+from .retriever import BaseFaissRetrieval, FaissHierarchicalSearch, SearchOutput
 
 __all__: list[str] = [
+    "BaseFaissRetrieval",
+    "FaissHierarchicalSearch",
     "FewShotHistoryMessage",
     "HistoryMessage",
-    "SimpleSummarizer",
-    "FaissRetrieval",
-    "RetrievalConfig",
     "SearchOutput",
+    "SimpleSummarizer",
 ]

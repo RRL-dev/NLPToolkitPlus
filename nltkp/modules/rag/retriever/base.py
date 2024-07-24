@@ -16,39 +16,13 @@ from typing import TYPE_CHECKING
 
 from numpy import float32  # noqa: TCH002
 from numpy.typing import NDArray  # noqa: TCH002
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from torch import Tensor  # noqa: TCH002
 
 if TYPE_CHECKING:
+    from types import SimpleNamespace
+
     from faiss.swigfaiss import IndexFlatIP, IndexFlatL2
-
-
-class RetrievalConfig(BaseModel):
-    """Configuration model for setting up the retrieval system.
-
-    Attributes
-    ----------
-        top_k (int): Number of top results to retrieve.
-        dimension (int): Dimension of the embeddings, required to set up the vector store.
-        index_type (str): Specifies the type of FAISS index, such as 'Flat' or 'IVFFlat'.
-        directory (str): Directory path where embeddings are stored.
-        pooling_modes (dict): Dictionary specifying the pooling modes used during eval.
-        model_type (str): Type of the model used for generating embeddings.
-
-    """
-
-    top_k: int
-    dimension: int = Field(default=..., description="Dimension of the embeddings")
-    index_type: str = Field(
-        default="IP",
-        description="Type of FAISS index, e.g., 'Flat' or 'IVFFlat'.",
-    )
-    directory: str = Field(default="", description="Directory path where embeddings are stored.")
-    pooling_modes: dict = Field(default={}, description="Specifying the pooling modes.")
-    model_type: str = Field(
-        default=...,
-        description="Type of the model, e.g., neural network model name.",
-    )
 
 
 class SearchInput(BaseModel):
@@ -92,15 +66,15 @@ class BaseRetrieval(ABC):
 
     index: IndexFlatIP | IndexFlatL2
 
-    def __init__(self: BaseRetrieval, config: RetrievalConfig) -> None:
+    def __init__(self: BaseRetrieval, config: SimpleNamespace) -> None:
         """Initialize the BaseRetrieval with a model and a configuration.
 
         Args:
         ----
-            config (RetrievalConfig): Configuration settings for the vector store.
+            config (SimpleNamespace): Configuration settings for the vector store.
 
         """
-        self.config: RetrievalConfig = config
+        self.config: SimpleNamespace = config
 
     @abstractmethod
     def build(self: BaseRetrieval) -> None:

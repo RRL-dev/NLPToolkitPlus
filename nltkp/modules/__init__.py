@@ -1,6 +1,7 @@
-from .reader import FolderTextSplitter, FolderTextSplitterConfig
+from .reader import BaseTextSplitter, HierarchicalTextSplitter, TextSplitterConfig
 
 __all__: list[str] = [
-    "FolderTextSplitter",
-    "FolderTextSplitterConfig",
+    "BaseTextSplitter",
+    "HierarchicalTextSplitter",
+    "TextSplitterConfig",
 ]

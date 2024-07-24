@@ -1,3 +1,3 @@
-from .text import FolderTextSplitter, FolderTextSplitterConfig
+from .text import BaseTextSplitter, HierarchicalTextSplitter, TextSplitterConfig
 
-__all__: list[str] = ["FolderTextSplitter", "FolderTextSplitterConfig"]
+__all__: list[str] = ["BaseTextSplitter", "HierarchicalTextSplitter", "TextSplitterConfig"]

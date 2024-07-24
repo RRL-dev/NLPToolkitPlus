@@ -1,4 +1,4 @@
-from .base import BaseRetrieval, RetrievalConfig, SearchInput, SearchOutput
-from .faiss import FaissRetrieval
+from .base import BaseRetrieval, SearchInput, SearchOutput
+from .faiss import BaseFaissRetrieval, FaissHierarchicalSearch
 
-__all__: list[str] = ["BaseRetrieval", "FaissRetrieval", "RetrievalConfig", "SearchInput", "SearchOutput"]
+__all__: list[str] = ["BaseFaissRetrieval", "BaseRetrieval", "FaissHierarchicalSearch", "SearchInput", "SearchOutput"]

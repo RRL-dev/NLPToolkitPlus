@@ -19,10 +19,10 @@ from nltkp.utils import LOGGER
 from .base import BaseFaissAnn
 
 if TYPE_CHECKING:
+    from types import SimpleNamespace
+
     from numpy.typing import NDArray
     from torch import Tensor
-
-    from nltkp.modules.rag.retriever import RetrievalConfig
 
 
 class FaissSimilaritySearch(BaseSentenceModel, BaseFaissAnn):
@@ -34,7 +34,7 @@ class FaissSimilaritySearch(BaseSentenceModel, BaseFaissAnn):
 
     def __init__(
         self: FaissSimilaritySearch,
-        config: RetrievalConfig,
+        config: SimpleNamespace,
     ) -> None:
         """Initialize the FaissSimilaritySearch for embedding searching.
 
@@ -49,23 +49,21 @@ class FaissSimilaritySearch(BaseSentenceModel, BaseFaissAnn):
 
         """
         BaseFaissAnn.__init__(self=self, index_type=config.index_type)
-        BaseSentenceModel.__init__(self=self, model_name=config.model_type, pooling_modes=config.pooling_modes)
-        self.config: RetrievalConfig = config
+        BaseSentenceModel.__init__(self=self, model_name=config.model_name, pooling_modes=config.pooling_modes)
         self.names: list[str] = []
 
     def load_embeddings_with_names(
         self: FaissSimilaritySearch,
-        directory: str,
     ) -> tuple[NDArray[float32], list[str]]:
         """Load embeddings and their names from pickle files."""
         LOGGER.info(
             "Start loading embeddings from: %s\n Using FaissSimilaritySearch",
-            self.config.directory,
+            self.config.embeddings,
         )
 
         names_list: list[str] = []
         embeddings_list: list[NDArray[float32]] = []
-        embeddings_path = Path(directory)
+        embeddings_path = Path(self.config.embeddings)
         # Adding a tqdm progress bar to the file processing loop
         for embedding_file in tqdm(
             iterable=embeddings_path.glob(pattern="*.pkl"),
@@ -106,14 +104,14 @@ class FaissSimilaritySearch(BaseSentenceModel, BaseFaissAnn):
     def _search_index(
         self: FaissSimilaritySearch,
         top_k: int,
-        embedding: NDArray[float32] | Tensor,
+        embeddings: NDArray[float32] | Tensor,
     ) -> tuple[NDArray[float32], NDArray[int32]]:
         """Search the FAISS index to find the nearest neighbors for the given embedding.
 
         Args:
         ----
             top_k (int): The number of nearest neighbors to retrieve.
-            embedding (NDArray[float32] | Tensor): The embedding of the query sentence(s).
+            embeddings (NDArray[float32] | Tensor): The embeddings of the query sentence(s).
 
         Returns:
         -------
@@ -122,7 +120,7 @@ class FaissSimilaritySearch(BaseSentenceModel, BaseFaissAnn):
         """
         indices: NDArray[int32]
         distances: NDArray[float32]
-        distances, indices = self.query(embedding=embedding, top_k=top_k)
+        distances, indices = self.query(embeddings=embeddings, top_k=top_k)
         LOGGER.info("Found nearest neighbors with distances: %s\n Indices: %s", distances, indices)
         return distances, indices
 
@@ -174,13 +172,13 @@ class FaissSimilaritySearch(BaseSentenceModel, BaseFaissAnn):
         distances: NDArray[float32]
 
         LOGGER.info("Performing query with top_k: %d\n Sentences: %s", top_k, sentences)
-        embedding: NDArray[float32] | Tensor = self._encode_sentences(sentences=sentences)
-        distances, indices = self._search_index(top_k=top_k, embedding=embedding)
+        embeddings: NDArray[float32] | Tensor = self._encode_sentences(sentences=sentences)
+        distances, indices = self._search_index(top_k=top_k, embeddings=embeddings)
         results: list[tuple[str, float, NDArray[float32]]] = self._get_results_with_reconstructions(
             indices=indices,
             distances=distances,
         )
-        return results, embedding
+        return results, embeddings
 
     def __repr__(self: FaissSimilaritySearch) -> str:
         """Provide an unambiguous string representation of the FaissSimilaritySearch object.

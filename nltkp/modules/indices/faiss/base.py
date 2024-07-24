@@ -18,10 +18,10 @@ Example usage:
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from faiss import IndexFlatIP, IndexFlatL2
-from numpy import dtype, float32, int32, ndarray
+from numpy import float32, int32, ndarray
 from torch import Tensor
 
 from nltkp.modules.indices import BaseAnn
@@ -83,14 +83,14 @@ class BaseFaissAnn(BaseAnn):
     def query(
         self: BaseFaissAnn,
         top_k: int,
-        embedding: Tensor | ndarray[Any, dtype[Any]],
+        embeddings: Tensor | NDArray[float32],
     ) -> tuple[NDArray[float32], NDArray[int32]]:
         """Query the index for nearest neighbors.
 
         Args:
         ----
             top_k (int): The number of nearest neighbors to retrieve.
-            embedding (Tensor | ndarray[Any, dtype[Any]): Embedding vector query nearest neighbors.
+            embeddings (Tensor | ndarray[Any, dtype[Any]): Embedding vector query nearest neighbors.
 
         Returns:
         -------
@@ -106,20 +106,20 @@ class BaseFaissAnn(BaseAnn):
             msg = "Index not initialized, please fit the model before querying."
             raise ValueError(msg)
 
-        if not isinstance(embedding, ndarray):
+        if not isinstance(embeddings, ndarray):
             msg = "Query embedding must be an ndarray."
             raise TypeError(msg)
 
-        if isinstance(embedding, Tensor):
-            embedding = embedding.cpu().numpy()
+        if isinstance(embeddings, Tensor):
+            embeddings = embeddings.cpu().numpy()
 
-        if embedding.ndim == 1:
-            embedding = embedding.reshape(1, -1)
+        if embeddings.ndim == 1:
+            embeddings = embeddings.reshape(1, -1)
 
         LOGGER.info("Query embedding with number of neighbors: %s", top_k)
 
         indices: NDArray[int32]
         distances: NDArray[float32]
-        distances, indices = self.index.search(embedding, top_k)  # type: ignore  # noqa: PGH003\
+        distances, indices = self.index.search(embeddings, top_k)  # type: ignore  # noqa: PGH003\
         LOGGER.info("Query results: distances=%s, indices=%s", distances, indices)
         return distances, indices
