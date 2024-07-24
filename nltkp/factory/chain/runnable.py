@@ -71,14 +71,14 @@ class ChainedRunnable(Generic[Input, Output]):
 
             def chained_func(input_value: Input) -> Other:
                 intermediate_result: Any = self.invoke(input_value=input_value)
-                return other.invoke(intermediate_result)
+                return other.invoke(input_value=intermediate_result)
 
             return ChainedRunnable(func=chained_func)
 
         if callable(other):
 
             def chained_callable(input_value: Input) -> Other:
-                intermediate_result: Any = self.invoke(input_value)
+                intermediate_result: Any = self.invoke(input_value=input_value)
                 return other(intermediate_result)
 
             return ChainedRunnable(func=chained_callable)
