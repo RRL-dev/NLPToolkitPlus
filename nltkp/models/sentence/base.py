@@ -156,8 +156,10 @@ class BaseSentenceModel(nn.Module):
         self: BaseSentenceModel,
         sentences: str | list[str],
         batch_size: int = 32,
-        convert_to_numpy: bool = True,  # noqa: FBT001, FBT002
-        normalize_embeddings: bool = True,  # noqa: FBT001, FBT002
+        *,
+        verbose: bool = False,
+        convert_to_numpy: bool = True,
+        normalize_embeddings: bool = True,
     ) -> ndarray[Any, dtype[Any]] | Tensor:
         """Encode a list of sentences into embeddings using a pre-trained model.
 
@@ -165,8 +167,8 @@ class BaseSentenceModel(nn.Module):
         ----
             sentences (str | list[str]): A single sentence or a list of sentences to encode.
             batch_size (int): The number of sentences to process in each batch.
+            verbose (bool): Flag to enable verbose logging.
             convert_to_numpy (bool): Flag to determine if the output should be converted to numpy arrays.
-            device (str | None): The device to perform the computation on. Defaults to 'cpu'.
             normalize_embeddings (bool): Whether to L2-normalize the embeddings.
 
         Returns:
@@ -175,7 +177,8 @@ class BaseSentenceModel(nn.Module):
                                             depending on the `convert_to_numpy` flag.
 
         """
-        LOGGER.info("Encoding sentences with model: %s", self.model_name)
+        if verbose:
+            LOGGER.info("Encoding sentences with model: %s", self.model_name)
         if isinstance(sentences, str):
             sentences = [sentences]
 
@@ -203,7 +206,8 @@ class BaseSentenceModel(nn.Module):
 
         if convert_to_numpy:
             # Convert all embeddings to NumPy arrays
-            LOGGER.info("Converting embeddings to numpy arrays.")
+            if verbose:
+                LOGGER.info(msg="Converting embeddings to numpy arrays.")
             return stack(arrays=[emb.cpu().numpy() for emb in all_embeddings])
         # Concatenate all tensors to form a single tensor
         return cat(tensors=all_embeddings, dim=0)
