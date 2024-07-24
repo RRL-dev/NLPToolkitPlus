@@ -44,7 +44,7 @@ class Phi3RMSNorm(nn.Module):
         input_dtype = hidden_states.dtype
         hidden_states = hidden_states.to(dtype=torch.float32)
         variance: Tensor = mean(input=hidden_states.pow(exponent=2), dim=-1, keepdim=True)
-        hidden_states = hidden_states * rsqrt(input=variance + self.variance_epsilon)
+        hidden_states *= rsqrt(input=variance + self.variance_epsilon)
         return self.weight * hidden_states.to(dtype=input_dtype)
 
 
@@ -72,7 +72,7 @@ class Phi3DecoderLayer(nn.Module):
         self.resid_mlp_dropout = nn.Dropout(p=config.resid_pdrop)
         self.post_attention_layernorm = Phi3RMSNorm(hidden_size=config.hidden_size, eps=config.rms_norm_eps)
 
-    def forward(  # noqa: PLR0913
+    def forward(
         self,
         hidden_states: Tensor,
         kv_cache: DynamicCache | None = None,
